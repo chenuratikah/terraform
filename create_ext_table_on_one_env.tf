@@ -6,6 +6,7 @@
 variable parquet_files_gcs {
   default = {
     table_name   = { id = "table_name", gcs_path = "path/to/*.parquet" }
+    # and more...
 
   }
 }
@@ -13,6 +14,7 @@ variable parquet_files_gcs {
 variable csv_files_gcs {
   default = {
     table_name   = { id = "table_name", gcs_path = "path/to/*.csv" }
+    # and more...
   }
 }
 
@@ -63,7 +65,7 @@ resource "google_bigquery_dataset" "my_dataset" {
 
 # Create external tables in BQ for parquet files
 resource "google_bigquery_table" "my_ext_tables_parquet" {
-  dataset_id  = google_bigquery_dataset.my_dataset[0].dataset_id # Follows resource name in line 32
+  dataset_id  = google_bigquery_dataset.my_dataset[0].dataset_id # Follows resource name in line 35
   for_each    = var.env == "stg" ? { for my_parquet in var.parquet_files_gcs : my_parquet.id => my_parquet } : {}
   table_id    = each.key
   description = (each.value).gcs_path
